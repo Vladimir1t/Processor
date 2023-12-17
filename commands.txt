@@ -1,0 +1,13 @@
+push 100
+push 200
+pop_r ax
+add
+
+push 230
+mul
+out
+push 10000
+jb 8
+
+out
+hlt
