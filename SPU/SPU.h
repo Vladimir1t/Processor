@@ -6,15 +6,18 @@
 
 #include "..\Assembler\Assembler.h"
 #include "..\Stack\Stack.h"
+#include "..\Onegin\Onegin.h"
 
 const char* fileSourse = "..\\Assembler\\res_ass.txt.";
+const char MASK        = 3;
 
 struct Spu
 {
-    Stack   stk;
-    Stack   stkAdr;
-    elem_t* arrayCommand;
-    size_t  arraySize;
+    Stack   stk;           // stack for arguments
+    Stack   stkAdr;        // stack for addresses
+    char*   arrayCommand;  // buffer of commands and arguments
+    size_t  arraySize;     // size of the buffer
+    elem_t* ram;           // random access memory
 };
 
 void SpuCtor (struct Spu* proc);
@@ -25,6 +28,14 @@ void FillArray (struct Spu* proc);
 
 void GetDigits (struct Spu* proc, elem_t* num2, elem_t* num1);
 
-int JumpTo (struct Spu* proc, int i);
+size_t JumpTo (struct Spu* proc, size_t IP);
+
+char GetCommand (struct Spu* proc, size_t IP);
+
+elem_t GetArgument (struct Spu* proc, size_t IP);
+
+void Push (struct Spu* proc, size_t IP);
+
+void Pop (struct Spu* proc, size_t* IP);
 
 #endif // SPU_H_INCLUDED

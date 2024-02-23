@@ -1,46 +1,65 @@
 #include "Assembler.h"
 
+FILE* ErrorFile = fopen ("ErrorFile.txt", "w");
+
 int main (int argc, char* argv[])
 {
-    //printf ("--%d--\n", NumberCommands);
+    char  sep[] = {' ', '\0', '\n'};                                          // skip these symbols while reading
+    char* command = NULL;                                                     // command from the array of the text
+    int   arg = 0;
+    int   regFirstSymb  = 0,
+          regSecondSymb = 0;
+    int   nStr = 0;
+    int   ptr  = 0;
 
-    struct Strings Str = {0};
-    static FILE* FILE_ERR = fopen ("file_error.txt", "w");
+    short int commandInt = 0;
+    char* commandInt2 = NULL;
+
+    if (argc < 3)
+        fprintf (ErrorFile, "--too few command arguments--\n");
+
+    struct Strings Str = {0};           /*struct: textPointer, StringsP[], fileSize, nStrings*/
+    Str.nStrings = 1;
 
     FILE* sourseF = fopen (argv[1], "rb");
     assert (sourseF != NULL);
 
-    FILE* resultF = fopen (argv[2], "w");
+    FILE* resultF = fopen (argv[2], "wb");
     assert (resultF != NULL);
 
-    Str.fileSize = FileSize (sourseF);
-    //printf ("size of file: %d\n", Str.fileSize);
+    Str.fileSize = FileSize (sourseF);                                            // measure a size of sourseF
+    printf ("size of file: %d\n", Str.fileSize);
 
     Str.textPointer = (char*) calloc (Str.fileSize + 1, sizeof(char));
-    if (fread (Str.textPointer, sizeof(char), Str.fileSize, sourseF) != Str.fileSize)
-        fputs ("ERROR. wrong fileSize\n", FILE_ERR);
+    assert (Str.textPointer != NULL);
 
-    fileFormat isR = StringsCount (&Str);
+    if (fread (Str.textPointer, sizeof(char), Str.fileSize, sourseF) != Str.fileSize)
+        fputs ("ERROR. wrong fileSize\n", ErrorFile);
 
     fclose (sourseF);
+    size_t len = Str.nStrings * 4;
+    /*char sepWords[] = {' ', '\n'};                        // new
+    char* token = strtok (Str.textPointer, sepWords);
+    while (token != NULL)
+    {
+        len++;
+        token = strtok (NULL, sepWords);
+    }
+    printf ("number of words = %d\n", len);             */
 
-    Str.stringsP = (struct String*) calloc (Str.nStrings, sizeof(struct String));
+
+    fileFormat isR = StringsCount (&Str);                                         // count a number of strings
+
+    Str.stringsP = (struct String*) calloc (Str.nStrings, sizeof(struct String)); // make an array of pointers of strings
     assert (Str.stringsP != NULL);
 
-    StringsPointerRead (&Str, isR);
+    StringsPointerRead (&Str, isR);                                               // divide text into array of strings
 
     StrPrint (&Str);
     //PrintSymbols (&Str);
 
-    double* buffer = (double*) calloc (Str.nStrings, sizeof(double));
+    char* buffer = (char*) calloc (len, sizeof(char));     // buffer with chars of chars
     assert (buffer != NULL);
-
-    char  sep[] = {' ', '\0', '\n'};
-    char* command = NULL;
-    int   arg = 0;
-    int   regFirstSymb = '\0', regSecondSymb = '\0';
-    int   nStr = 0;
-    int*  word = NULL;
 
     while (nStr < Str.nStrings)
     {
@@ -49,45 +68,53 @@ int main (int argc, char* argv[])
         {
             if (!strcmp (AllCommands[i].command, command))
             {
-                word = (int*) &buffer[nStr];
-                word[0] = AllCommands[i].num;
-                //printf ("word[0] = %d\n", word[0]);
+                commandInt = (char) AllCommands[i].num;
+
+                memcpy (buffer + ptr * sizeof(buffer[0]), &commandInt, sizeof(char));
+                printf ("word[0] = %d\n", *(char*) (buffer + ptr));
 
                 if (AllCommands[i].argMod == HAS_ARG)
                 {
                     command = strtok (NULL, sep);
+                    if (command == NULL)
+                        fprintf (ErrorFile, "--Error. No argument--\n");
 
-                    if (AllCommands[i].num == pop_r ||
-                        AllCommands[i].num == push_r)
+                    if (command[1] == 'x')
                     {
-                        sscanf (command, "%c %c", &regFirstSymb, &regSecondSymb);
+                        memcpy (buffer + (ptr + 1) * sizeof(buffer[0]), &REG_MOD, sizeof(char));   // second byte = 1
+                        sscanf (command, "%c %c", &regFirstSymb, &regSecondSymb); // take 2 symbols of register and make them integers
                         arg = regSecondSymb - regFirstSymb;
-                        word[1] = arg;
-                        //printf ("word[1] = %d\n", word[1]);
-                        break;
+                    }
+                    else if (command[0] == '[')
+                    {
+                        memcpy (buffer + (ptr + 1) * sizeof(buffer[0]), &RAM_MOD, sizeof(char));    // first byte = 2
+                        printf ("word[0] = %d\n", *(char*) (buffer + ptr + 1));
+                        sscanf (command, "[%d]", &arg);
                     }
                     else
                     {
                         sscanf (command, "%d", &arg);
-                        //printf ("%d\n", arg);
-                        word[1] = arg;
-                        //printf ("word[1] = %d\n", word[1]);
-                        break;
+                        memcpy (buffer + (ptr + 1) * sizeof(buffer[0]), &NUM_MOD, sizeof(char));
                     }
+
+                    ptr += COM_LEN;
+                    memcpy (buffer + ptr * sizeof(buffer[0]), &arg, sizeof(int));
+                    printf ("word[1] = %d\n", *(int*) (buffer + ptr));
+                    ptr += ARG_LEN;
+                    break;
                 }
-                break;
+                ptr += COM_LEN;
             }
         }
         nStr++;
     }
-    //for (int i = 0; i < Str.nStrings; i ++)
-    //    printf ("%lg\n", buffer[i]);
-    fwrite ((double*) buffer, sizeof(double), Str.nStrings, resultF);
+    fwrite (buffer, sizeof(char), ptr, resultF);
 
-    fclose (sourseF);
     fclose (resultF);
+    fclose (ErrorFile);
     ClearMemory (&Str);
     free (buffer);
-
+    free (Str.textPointer);
     return 0;
 }
+
