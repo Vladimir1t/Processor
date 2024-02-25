@@ -20,17 +20,12 @@ fileFormat StringsCount (struct Strings* StrP)
             (StrP->nStrings)++;
             continue;
         }
-        //else if (StrP->textPointer[j] == '\0')
-        //    (StrP->nStrings)++;
     }
-
-    //(StrP->nStrings)++;   //
-    //StrP->nStrings = StrP->nStrings  2 + 2;
     printf ("number of strings: %d\n", StrP->nStrings);
 
     char* elementP = strchr (StrP->textPointer, '\0');
     isR = (fileFormat) (StrP->nStrings > 1 && *(elementP + 1) == '\n');  // defines file format
-    //printf ("isr = %d\n", isR);
+
     return isR;
 }
 

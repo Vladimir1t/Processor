@@ -17,7 +17,6 @@ const int    NUMBER_DIGITS = 9;
 const size_t ARG_LEN       = 4;
 const size_t COM_LEN       = 2;
 
-//typedef char elem_bynary;
 const char  NUM_MOD        = 0;
 const char  REG_MOD        = 1;
 const char  RAM_MOD        = 2;
@@ -38,8 +37,6 @@ enum COMMANDS
     out    = 6,
     in     = 7,
     pop    = 8,
-    push_r = 17,
-    pop_r  = 19,
     hlt    = -1,
     jmp    = 37,
     jb     = 38,
@@ -70,8 +67,6 @@ struct operation AllCommands[] =
     {"out",    out,    NO_ARG},
     {"in",     in,     NO_ARG},
     {"pop",    pop,    HAS_ARG},
-   // {"push_r", push_r, HAS_ARG},
-   // {"pop_r",  pop_r,  HAS_ARG},
     {"hlt",    hlt,    NO_ARG},
     {"jmp",    jmp,    HAS_ARG},
     {"jb",     jb,     HAS_ARG},

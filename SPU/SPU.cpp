@@ -7,7 +7,7 @@ int main ()
     struct Spu proc = {0};
     SpuCtor (&proc);
 
-    FillArray (&proc);    // get bytecode
+    FillArray (&proc);                                     // get bytecode from sourse file
     FILE* resultF = fopen ("result.txt", "w");
 
     elem_t num1 = POISON, num2 = POISON, num3 = POISON;
@@ -25,11 +25,6 @@ int main ()
 
             case pop:
                 Pop (&proc, &IP);
-
-               /* StackPop (&proc.stk, &num1);
-                printf ("pop %d\n", num1);
-                num1 = POISON;  */
-                //IP += 2;
                 break;
 
             case add:
@@ -77,40 +72,11 @@ int main ()
                 break;
 
             case in:
+                printf ("write a number\n");
                 scanf (SPEC, &num1);
                 StackPush (&proc.stk, &num1);
-                //PUSH(&num);
                 num1 = POISON;
                 break;
-
-         /*   case pop_r:
-                for (int j = 0; j < REGISTRS_NUM; j++)
-                {
-                    if (GetArgument (&proc, IP + 2) == (int) reg[j].name[1] - (int) reg[j].name[0])
-                    {
-                        StackPop (&proc.stk, &num1);
-                        printf ("popped = %d\n", num1);
-                        reg[j].value = num1;
-                        num1 = POISON;
-                        break;
-                    }
-                }
-                IP += 4;
-                break;
-
-            case push_r:
-                for (int j = 0; j < REGISTRS_NUM; j++)
-                {
-                    if (GetArgument (&proc, IP + 2) == (int) reg[j].name[1] - (int) reg[j].name[0])
-                    {
-                        printf ("pushed = %d\n", reg[j].value);
-                        StackPush (&proc.stk, &reg[j].value);
-                        //reg[j].value = POISON;
-                        break;
-                    }
-                }
-                IP += 4;
-                break;             */
 
             case hlt:
                 fclose (resultF);
@@ -123,7 +89,6 @@ int main ()
                 break;
 
             case jb:
-                //GetDigits (&proc, &num2, &num1);
                 if (proc.stk.data[proc.stk.size - 2] < proc.stk.data[proc.stk.size - 1])
                     IP = JumpTo (&proc, IP);
 
@@ -137,7 +102,7 @@ int main ()
             case jbe:
                 if (proc.stk.data[proc.stk.size - 2] <= proc.stk.data[proc.stk.size - 1])
                     IP = JumpTo (&proc, IP);
-                //StackPop (&proc.stk, &num1);
+                StackPop (&proc.stk, &num1);
                 num1 = POISON;
                 break;
 
@@ -165,11 +130,6 @@ int main ()
             case jne:
                 if (proc.stk.data[proc.stk.size - 2] != proc.stk.data[proc.stk.size - 1])
                     IP = JumpTo (&proc, IP);
-                /*{
-                    address = proc.arrayCommand[i + 1];
-                    printf ("jump to %d\n", address);
-                    i = address - 1;
-                }   */
                 StackPop (&proc.stk, &num1);
                 num1 = POISON;
                 break;
@@ -202,7 +162,10 @@ void SpuCtor (Spu* proc)
     proc->arrayCommand = NULL;        // buffer
     proc->arraySize = 0;              // size of buffer
 
-    proc->ram = (elem_t*) calloc (10, sizeof(elem_t));
+    proc->ramSize = RAM_SIZE;         // construct random access memory
+    proc->ram = (elem_t*) calloc (RAM_SIZE, sizeof(elem_t));
+    for (size_t i = 0; i < proc->ramSize; i++)
+        proc->ram[i] = POISON;
 }
 
 void SpuDtor (Spu* proc)
@@ -217,6 +180,8 @@ void SpuDtor (Spu* proc)
         proc->arrayCommand[i] = '\0';
     free (proc->arrayCommand);
     proc->arrayCommand = NULL;
+
+    free (proc->ram);
 }
 
 void FillArray (Spu* proc)
@@ -233,9 +198,8 @@ void FillArray (Spu* proc)
 
     if (fread (proc->arrayCommand, sizeof(char), Str.fileSize, bytecode) != Str.fileSize)
         fprintf (ErrorFile, "--Error. file reading error--\n");
-    //printf ("size of file: %d\n", Str.fileSize);
-    fclose (bytecode);
 
+    fclose (bytecode);
     free (Str.textPointer);
 }
 
@@ -248,7 +212,7 @@ void GetDigits (struct Spu* proc, elem_t* num2, elem_t* num1)
 size_t JumpTo (struct Spu* proc, size_t IP)
 {
     printf ("jump to %d\n", GetArgument (proc, IP));
-    return  GetArgument (proc, IP) - 2;
+    return  GetArgument (proc, IP) - COM_LEN;
 }
 
 char GetCommand (struct Spu* proc, size_t IP)
@@ -268,13 +232,12 @@ elem_t GetArgument (struct Spu* proc, size_t IP)
 void Push (struct Spu* proc, size_t IP)
 {
     elem_t arg = GetArgument (proc, IP);
-
-    //printf ("[%d] -> [%d]\n", proc->arrayCommand[IP + 1], proc->arrayCommand[IP + 1] & MASK);
+    elem_t adr = POISON;
 
     switch (proc->arrayCommand[IP + 1] & MASK)
     {
         case NUM_MOD:
-            StackPush (&proc->stk, &arg); //&proc.arrayCommand[i + 1]);
+            StackPush (&proc->stk, &arg);
             printf ("push %d\n", arg);
             break;
 
@@ -291,21 +254,23 @@ void Push (struct Spu* proc, size_t IP)
                 }
             break;
 
-       // case RAM_MOD:
-            //
-            //
-            //
+        case RAM_MOD:
+            adr = GetArgument (proc, IP);
+            arg = proc->ram[adr];
+            StackPush (&proc->stk, &arg);
+            break;
     }
 }
 
 void Pop (struct Spu* proc, size_t* IP)
 {
     elem_t arg = POISON;
+    elem_t adr = POISON;
 
     switch (proc->arrayCommand[*IP + 1] & MASK)
     {
         case NUM_MOD:
-            StackPush (&proc->stk, &arg); //&proc.arrayCommand[i + 1]);
+            StackPush (&proc->stk, &arg);
             printf ("push %d\n", arg);
             break;
 
@@ -324,10 +289,12 @@ void Pop (struct Spu* proc, size_t* IP)
                 }
             break;
 
-       // case RAM_MOD:
-            //
-            //
-            //
+        case RAM_MOD:
+            adr = GetArgument (proc, *IP);
+            StackPop (&proc->stk, &arg);
+            proc->ram[adr] = arg;
+            (*IP) += ARG_LEN;
+            break;
     }
 }
 

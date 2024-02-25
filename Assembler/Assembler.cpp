@@ -11,14 +11,12 @@ int main (int argc, char* argv[])
           regSecondSymb = 0;
     int   nStr = 0;
     int   ptr  = 0;
-
-    short int commandInt = 0;
-    char* commandInt2 = NULL;
+    short commandInt = 0;
 
     if (argc < 3)
         fprintf (ErrorFile, "--too few command arguments--\n");
 
-    struct Strings Str = {0};           /*struct: textPointer, StringsP[], fileSize, nStrings*/
+    struct Strings Str = {0};        /*struct: textPointer, StringsP[], fileSize, nStrings*/
     Str.nStrings = 1;
 
     FILE* sourseF = fopen (argv[1], "rb");
@@ -38,15 +36,6 @@ int main (int argc, char* argv[])
 
     fclose (sourseF);
     size_t len = Str.nStrings * 4;
-    /*char sepWords[] = {' ', '\n'};                        // new
-    char* token = strtok (Str.textPointer, sepWords);
-    while (token != NULL)
-    {
-        len++;
-        token = strtok (NULL, sepWords);
-    }
-    printf ("number of words = %d\n", len);             */
-
 
     fileFormat isR = StringsCount (&Str);                                         // count a number of strings
 
@@ -58,7 +47,7 @@ int main (int argc, char* argv[])
     StrPrint (&Str);
     //PrintSymbols (&Str);
 
-    char* buffer = (char*) calloc (len, sizeof(char));     // buffer with chars of chars
+    char* buffer = (char*) calloc (len, sizeof(char));                            // buffer of chars (bytecode)
     assert (buffer != NULL);
 
     while (nStr < Str.nStrings)
@@ -71,7 +60,7 @@ int main (int argc, char* argv[])
                 commandInt = (char) AllCommands[i].num;
 
                 memcpy (buffer + ptr * sizeof(buffer[0]), &commandInt, sizeof(char));
-                printf ("word[0] = %d\n", *(char*) (buffer + ptr));
+                //printf ("word[0] = %d\n", *(char*) (buffer + ptr));
 
                 if (AllCommands[i].argMod == HAS_ARG)
                 {
@@ -81,25 +70,25 @@ int main (int argc, char* argv[])
 
                     if (command[1] == 'x')
                     {
-                        memcpy (buffer + (ptr + 1) * sizeof(buffer[0]), &REG_MOD, sizeof(char));   // second byte = 1
-                        sscanf (command, "%c %c", &regFirstSymb, &regSecondSymb); // take 2 symbols of register and make them integers
+                        memcpy (buffer + (ptr + 1) * sizeof(buffer[0]), &REG_MOD, sizeof(char));   // second byte = 1 (register mode)
+                        sscanf (command, "%c %c", &regFirstSymb, &regSecondSymb);                  // take 2 symbols of register and make them integers
                         arg = regSecondSymb - regFirstSymb;
                     }
                     else if (command[0] == '[')
                     {
-                        memcpy (buffer + (ptr + 1) * sizeof(buffer[0]), &RAM_MOD, sizeof(char));    // first byte = 2
-                        printf ("word[0] = %d\n", *(char*) (buffer + ptr + 1));
+                        memcpy (buffer + (ptr + 1) * sizeof(buffer[0]), &RAM_MOD, sizeof(char));    // first byte = 2 (ram mode)
+                        //printf ("word[0] = %d\n", *(char*) (buffer + ptr + 1));
                         sscanf (command, "[%d]", &arg);
                     }
                     else
                     {
+                        memcpy (buffer + (ptr + 1) * sizeof(buffer[0]), &NUM_MOD, sizeof(char));    // first byte = 0 (stack mode)
                         sscanf (command, "%d", &arg);
-                        memcpy (buffer + (ptr + 1) * sizeof(buffer[0]), &NUM_MOD, sizeof(char));
                     }
 
                     ptr += COM_LEN;
                     memcpy (buffer + ptr * sizeof(buffer[0]), &arg, sizeof(int));
-                    printf ("word[1] = %d\n", *(int*) (buffer + ptr));
+                    //printf ("word[1] = %d\n", *(int*) (buffer + ptr));
                     ptr += ARG_LEN;
                     break;
                 }

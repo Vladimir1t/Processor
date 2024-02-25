@@ -8,8 +8,9 @@
 #include "..\Stack\Stack.h"
 #include "..\Onegin\Onegin.h"
 
-const char* fileSourse = "..\\Assembler\\res_ass.txt.";
-const char MASK        = 3;
+const char*  fileSourse  = "res_ass.txt";  // bytecode
+const char   MASK        = 3;              // 0000 0011
+const size_t RAM_SIZE    = 50;
 
 struct Spu
 {
@@ -18,6 +19,7 @@ struct Spu
     char*   arrayCommand;  // buffer of commands and arguments
     size_t  arraySize;     // size of the buffer
     elem_t* ram;           // random access memory
+    elem_t  ramSize;
 };
 
 void SpuCtor (struct Spu* proc);
