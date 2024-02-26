@@ -1,4 +1,4 @@
-#include "SPU.h"
+#include "CPU.h"
 
 FILE* ErrorFile = fopen ("ErrorFile.txt", "w");
 
@@ -131,6 +131,7 @@ int main ()
                 if (proc.stk.data[proc.stk.size - 2] != proc.stk.data[proc.stk.size - 1])
                     IP = JumpTo (&proc, IP);
                 StackPop (&proc.stk, &num1);
+                // POP(&num1);
                 num1 = POISON;
                 break;
 

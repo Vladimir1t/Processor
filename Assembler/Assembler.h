@@ -87,7 +87,7 @@ struct registrs
     elem_t value;
 };
 
-struct registrs reg[REGISTRS_NUM]
+struct registrs reg[REGISTRS_NUM] =
 {
     {"ax", POISON},  // 23
     {"bx", POISON},  // 24

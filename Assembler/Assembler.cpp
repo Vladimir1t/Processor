@@ -4,8 +4,8 @@ FILE* ErrorFile = fopen ("ErrorFile.txt", "w");
 
 int main (int argc, char* argv[])
 {
-    char  sep[] = {' ', '\0', '\n'};                                          // skip these symbols while reading
-    char* command = NULL;                                                     // command from the array of the text
+    char  sep[] = {' ', '\0', '\n'};                        // skip these symbols while reading file
+    char* command = NULL;                                   // command from the array of the text
     int   arg = 0;
     int   regFirstSymb  = 0,
           regSecondSymb = 0;
@@ -35,7 +35,7 @@ int main (int argc, char* argv[])
         fputs ("ERROR. wrong fileSize\n", ErrorFile);
 
     fclose (sourseF);
-    size_t len = Str.nStrings * 4;
+    size_t len = Str.nStrings * (ARG_LEN + COM_LEN);
 
     fileFormat isR = StringsCount (&Str);                                         // count a number of strings
 
