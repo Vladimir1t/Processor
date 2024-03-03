@@ -1,149 +1,155 @@
-#include "CPU.h"
+#include "..\include\CPU.h"
 
-FILE* ErrorFile = fopen ("ErrorFile.txt", "w");
+FILE* ErrorFile = fopen ("..\\..\\Log\\error_CPU.txt", "w");
 
 int main ()
 {
-    struct Spu proc = {0};
-    SpuCtor (&proc);
+    struct Cpu proc = {0};
+    CpuCtor (&proc);
 
-    FillArray (&proc);                                     // get bytecode from sourse file
-    FILE* resultF = fopen ("result.txt", "w");
+    FillArray (&proc);
+                                       // get bytecode from sourse file
+    FILE* resultF = fopen ("..\\..\\log\\result.txt", "w");
 
-    elem_t num1 = POISON, num2 = POISON, num3 = POISON;
+    int result = ObeyCommands (resultF, &proc);
+
+    return 0;
+}
+
+int ObeyCommands (FILE* resultF, struct Cpu* proc)
+{
+    elem_t num1    = POISON,
+           num2    = POISON,
+           num3    = POISON;
     elem_t address = POISON;
 
-    for (size_t IP = 0; IP < proc.arraySize; IP += COM_LEN)
+    for (size_t IP = 0; IP < proc->arraySize; IP += COM_SIZE)
     {
 
-        switch (GetCommand (&proc, IP))
+        switch (GetCommand (proc, IP))
         {
-            case push:
-                Push (&proc, IP);
-                IP += ARG_LEN;
+            case PUSH:
+                Push (proc, IP);
+                IP += ARG_SIZE;
                 break;
 
-            case pop:
-                Pop (&proc, &IP);
+            case POP:
+                Pop (proc, &IP);
                 break;
 
-            case add:
-                GetDigits (&proc, &num2, &num1);
+            case ADD:
+                GetDigits (proc, &num2, &num1);
                 num3 = num1 + num2;
-                StackPush (&proc.stk, &num3);
+                StackPush (&proc->stk, &num3);
                 printf ("push %d\n", num3);
                 num1 = POISON;
                 num2 = POISON;
                 break;
 
-            case sub:
-                GetDigits (&proc, &num2, &num1);
+            case SUB:
+                GetDigits (proc, &num2, &num1);
                 num3 = num1 - num2;
-                StackPush (&proc.stk, &num3);
+                StackPush (&proc->stk, &num3);
                 printf ("push %d\n",  num3);
                 num1 = POISON;
                 num2 = POISON;
                 break;
 
-            case dif:
-                GetDigits (&proc, &num2, &num1);
+            case DIV:
+                GetDigits (proc, &num2, &num1);
                 num3 = num1 / num2;
-                StackPush (&proc.stk, &num3);
+                StackPush (&proc->stk, &num3);
                 printf ("push %d\n",  num3);
                 num1 = POISON;
                 num2 = POISON;
                 break;
 
-            case mul:
-                GetDigits (&proc, &num2, &num1);
+            case MUL:
+                GetDigits (proc, &num2, &num1);
                 num3 = num1 * num2;
-                StackPush (&proc.stk, &num3);
+                StackPush (&proc->stk, &num3);
                 printf ("push %d\n",  num3);
                 num1 = POISON;
                 num2 = POISON;
                 break;
 
-            case out:
-                for (int j = 0; j < proc.stk.size; j++)
+            case OUT:
+                for (int j = 0; j < proc->stk.size; j++)
                 {
-                    fprintf (resultF, "[%d] %d\n", j, proc.stk.data[j]);
-                    printf ("[%d] %d\n", j, proc.stk.data[j]);
+                    fprintf (resultF, "[%d] %d\n", j, proc->stk.data[j]);
+                    printf ("[%d] %d\n", j, proc->stk.data[j]);
                 }
                 break;
 
-            case in:
+            case IN:
                 printf ("write a number\n");
                 scanf (SPEC, &num1);
-                StackPush (&proc.stk, &num1);
+                StackPush (&proc->stk, &num1);
                 num1 = POISON;
                 break;
 
-            case hlt:
+            case HLT:
                 fclose (resultF);
-                SpuDtor (&proc);
+                CpuDtor (proc);
                 return 0;
                 break;
 
-            case jmp:
-                JumpTo (&proc, IP);
+            case JMP:
+                JumpTo (proc, IP);
                 break;
 
-            case jb:
-                if (proc.stk.data[proc.stk.size - 2] < proc.stk.data[proc.stk.size - 1])
-                    IP = JumpTo (&proc, IP);
-
-                //reg[0].value = num1;
-                //printf ("reg = %d\n", reg[1].value);
-                StackPop (&proc.stk, &num1);
-                num1 = POISON;
-                num2 = POISON;
-                break;
-
-            case jbe:
-                if (proc.stk.data[proc.stk.size - 2] <= proc.stk.data[proc.stk.size - 1])
-                    IP = JumpTo (&proc, IP);
-                StackPop (&proc.stk, &num1);
+            case JB:
+                if (proc->stk.data[proc->stk.size - 2] < proc->stk.data[proc->stk.size - 1])
+                    IP = JumpTo (proc, IP);
+                StackPop (&proc->stk, &num1);
                 num1 = POISON;
                 break;
 
-            case ja:
-                if (proc.stk.data[proc.stk.size - 2] > proc.stk.data[proc.stk.size - 1])
-                    IP = JumpTo (&proc, IP);
-                StackPop (&proc.stk, &num1);
+            case JBE:
+                if (proc->stk.data[proc->stk.size - 2] <= proc->stk.data[proc->stk.size - 1])
+                    IP = JumpTo (proc, IP);
+                StackPop (&proc->stk, &num1);
                 num1 = POISON;
                 break;
 
-            case jae:
-                if (proc.stk.data[proc.stk.size - 2] >= proc.stk.data[proc.stk.size - 1])
-                    IP = JumpTo (&proc, IP);
-                StackPop (&proc.stk, &num1);
+            case JA:
+                if (proc->stk.data[proc->stk.size - 2] > proc->stk.data[proc->stk.size - 1])
+                    IP = JumpTo (proc, IP);
+                StackPop (&proc->stk, &num1);
                 num1 = POISON;
                 break;
 
-            case je:
-                if (proc.stk.data[proc.stk.size - 2] == proc.stk.data[proc.stk.size - 1])
-                    IP = JumpTo (&proc, IP);
-                StackPop (&proc.stk, &num1);
+            case JAE:
+                if (proc->stk.data[proc->stk.size - 2] >= proc->stk.data[proc->stk.size - 1])
+                    IP = JumpTo (proc, IP);
+                StackPop (&proc->stk, &num1);
                 num1 = POISON;
                 break;
 
-            case jne:
-                if (proc.stk.data[proc.stk.size - 2] != proc.stk.data[proc.stk.size - 1])
-                    IP = JumpTo (&proc, IP);
-                StackPop (&proc.stk, &num1);
+            case JE:
+                if (proc->stk.data[proc->stk.size - 2] == proc->stk.data[proc->stk.size - 1])
+                    IP = JumpTo (proc, IP);
+                StackPop (&proc->stk, &num1);
+                num1 = POISON;
+                break;
+
+            case JNE:
+                if (proc->stk.data[proc->stk.size - 2] != proc->stk.data[proc->stk.size - 1])
+                    IP = JumpTo (proc, IP);
+                StackPop (&proc->stk, &num1);
                 // POP(&num1);
                 num1 = POISON;
                 break;
 
-            case call:
+            case CALL:
                 address = IP;
-                StackPush (&proc.stkAdr, &address);
-                IP = JumpTo (&proc, IP);
+                StackPush (&proc->stkAdr, &address);
+                IP = JumpTo (proc, IP);
                 address = POISON;
                 break;
 
-            case ret:
-                StackPop (&proc.stkAdr, &address);
+            case RET:
+                StackPop (&proc->stkAdr, &address);
                 IP = address;
                 address = POISON;
                 break;
@@ -151,11 +157,11 @@ int main ()
     }
 
     fclose (resultF);
-    SpuDtor (&proc);
+    CpuDtor (proc);
     return 0;
 }
 
-void SpuCtor (Spu* proc)
+void CpuCtor (Cpu* proc)
 {
     StackCtor (&proc->stk, 2);        // construct Stack of arguments
     StackCtor (&proc->stkAdr, 2);     // construct Stack of addresses
@@ -169,7 +175,7 @@ void SpuCtor (Spu* proc)
         proc->ram[i] = POISON;
 }
 
-void SpuDtor (Spu* proc)
+void CpuDtor (struct Cpu* proc)
 {
     for (size_t i = 0; i < proc->stk.size; i++)
         proc->stk.data[i] = POISON;
@@ -185,7 +191,7 @@ void SpuDtor (Spu* proc)
     free (proc->ram);
 }
 
-void FillArray (Spu* proc)
+void FillArray (struct Cpu* proc)
 {
     struct Strings Str = {0};
     FILE* bytecode = fopen (fileSourse, "rb");
@@ -204,33 +210,33 @@ void FillArray (Spu* proc)
     free (Str.textPointer);
 }
 
-void GetDigits (struct Spu* proc, elem_t* num2, elem_t* num1)
+void GetDigits (struct Cpu* proc, elem_t* num2, elem_t* num1)
 {
     StackPop (&proc->stk, num2);
     StackPop (&proc->stk, num1);
 }
 
-size_t JumpTo (struct Spu* proc, size_t IP)
+size_t JumpTo (struct Cpu* proc, size_t IP)
 {
     printf ("jump to %d\n", GetArgument (proc, IP));
-    return  GetArgument (proc, IP) - COM_LEN;
+    return  GetArgument (proc, IP) - COM_SIZE;
 }
 
-char GetCommand (struct Spu* proc, size_t IP)
+char GetCommand (struct Cpu* proc, size_t IP)
 {
     char command = *(char*) (proc->arrayCommand + IP);
     printf ("{%d}\n", command);
     return command;
 }
 
-elem_t GetArgument (struct Spu* proc, size_t IP)
+elem_t GetArgument (struct Cpu* proc, size_t IP)
 {
-    int argument = *(int*) (proc->arrayCommand + IP + COM_LEN);
+    int argument = *(int*) (proc->arrayCommand + IP + COM_SIZE);
     printf ("{%d}\n", argument);
     return argument;
 }
 
-void Push (struct Spu* proc, size_t IP)
+void Push (struct Cpu* proc, size_t IP)
 {
     elem_t arg = GetArgument (proc, IP);
     elem_t adr = POISON;
@@ -263,7 +269,7 @@ void Push (struct Spu* proc, size_t IP)
     }
 }
 
-void Pop (struct Spu* proc, size_t* IP)
+void Pop (struct Cpu* proc, size_t* IP)
 {
     elem_t arg = POISON;
     elem_t adr = POISON;
@@ -284,7 +290,7 @@ void Pop (struct Spu* proc, size_t* IP)
                         printf ("popped into reg = %d\n", arg);
                         reg[j].value = arg;
                         arg = POISON;
-                        *IP += ARG_LEN;
+                        *IP += ARG_SIZE;
                         break;
                     }
                 }
@@ -294,7 +300,7 @@ void Pop (struct Spu* proc, size_t* IP)
             adr = GetArgument (proc, *IP);
             StackPop (&proc->stk, &arg);
             proc->ram[adr] = arg;
-            (*IP) += ARG_LEN;
+            (*IP) += ARG_SIZE;
             break;
     }
 }

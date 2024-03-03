@@ -1,4 +1,4 @@
-#include "Onegin.h"
+#include "..\include\Onegin.h"
 
 fileFormat StringsCount (struct Strings* StrP)
 {
