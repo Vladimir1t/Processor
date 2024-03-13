@@ -9,7 +9,7 @@ int main ()
 
     FillArray (&proc);
                                        // get bytecode from sourse file
-    FILE* resultF = fopen ("..\\..\\log\\result.txt", "w");
+    FILE* resultF = fopen ("..\\..\\Log\\result.txt", "w");
 
     int result = ObeyCommands (resultF, &proc);
 

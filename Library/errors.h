@@ -9,6 +9,4 @@ enum result
     NULL_PTR   = 4,
 };
 
-
-
 #endif // ERRORS_H_INCLUDED
