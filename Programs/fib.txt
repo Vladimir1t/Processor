@@ -1,0 +1,40 @@
+in  # write a number  
+call fib__:
+out
+hlt
+fib__:
+	pop ax
+	push ax
+	push 1
+	je fib_0:  # if number = 0  
+	pop n
+
+	push ax
+	push 2
+	je fib_1:  # if number = 1
+	pop n
+
+	push ax
+	push ax
+
+	push 1
+	sub
+	call fib__:
+	pop bx
+
+	push 2
+	sub
+	pop cx
+
+	push bx 
+	push cx
+	add
+	ret
+
+fib_1:
+	push 1
+	ret
+
+fib_0:
+	push 0
+	ret

@@ -1,9 +1,9 @@
-push 8
-call fact:
-out
+in          # get number from user
+call fact_: # call fuction factorial
+out         # print result
 hlt
 
-fact:
+fact_:
     pop ax
     push ax
     push ax
@@ -12,8 +12,8 @@ fact:
     pop ax
     push ax
         push 1
-        jbe skip:
-    call fact:
-    skip:
+        jbe skip_:  # if number <= 1
+    call fact_:
+    skip_:          # stop the program
     mul
     ret

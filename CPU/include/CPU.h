@@ -9,8 +9,8 @@
 #include "..\..\Onegin\include\onegin.h"
 
 const char*  fileSourse  = "Assembler\\res_ass.txt";  // bytecode
-const char   MASK        = 3;              // 0000 0011
-const size_t RAM_SIZE    = 50;
+const char   MASK        = 3;                         // 0000 0011
+const size_t RAM_SIZE    = 50;                        // size of a RAM
 
 struct Cpu
 {
@@ -28,7 +28,7 @@ void CpuCtor (struct Cpu* proc);
 
 void CpuDtor (struct Cpu* proc);
 
-void FillArray (struct Cpu* proc);
+int FillArray (struct Cpu* proc);
 
 void GetDigits (struct Cpu* proc, elem_t* num2, elem_t* num1);
 

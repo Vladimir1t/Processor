@@ -11,12 +11,15 @@
 #include "..\..\Stack\include\stack.h"
 #include "..\..\Onegin\include\onegin.h"
 #include "..\..\Library\errors.h"
+#include "..\..\Library\DSL.h"
 
 const size_t COMMAND_LEN   =  5;
 const size_t REGISTRS_NUM  =  4;
 const int    NUMBER_DIGITS =  9;
+
 const size_t ARG_SIZE      =  4;
 const size_t COM_SIZE      =  2;
+
 const size_t POISON_ADR    = -1;
 const size_t MARK_LEN      =  6;
 
@@ -82,22 +85,13 @@ struct operation AllCommands[] =
     {"ret",  RET,  NO_ARG}
 };
 
-const size_t COMMANDS_NUM = sizeof(AllCommands) / sizeof(AllCommands[0]);
+const size_t COMMANDS_NUM = sizeof (AllCommands) / sizeof (AllCommands[0]);
 
-struct marks
+struct mark
 {
     char   name[MARK_LEN];
     size_t address;
 };
-
-struct marks AllMarks[] =
-{
-    {"fact:", POISON_ADR},
-    {"skip:", POISON_ADR},
-    {"jump:", POISON_ADR},
-};
-
-const size_t MARKS_NUM = sizeof(AllMarks) / sizeof(AllMarks[0]);
 
 struct registrs
 {
@@ -117,7 +111,9 @@ int ReadSourseFile (FILE* sourseF, struct Strings* Str);
 
 int MakeBytecode (FILE* resultF, struct Strings* Str);
 
-int GetArgument (char* command, char* buffer, size_t* ptr);
+int GetArgument (char* command, char* buffer, size_t* ptr, struct mark* allMarks, size_t markNum);
+
+int FindMarks (struct Strings* Str, size_t* len, struct mark* allMarks, size_t* marksNum);
 
 char *strtokR (char *str, const char *delim);
 

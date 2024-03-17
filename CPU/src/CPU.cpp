@@ -12,6 +12,8 @@ int main ()
     FILE* resultF = fopen ("..\\..\\Log\\result.txt", "w");
 
     int result = ObeyCommands (resultF, &proc);
+    if (result == SUCCESS)
+        printf ("PROGRAM HAS FINISHED SUCCESSFULLY\n");
 
     return 0;
 }
@@ -38,39 +40,19 @@ int ObeyCommands (FILE* resultF, struct Cpu* proc)
                 break;
 
             case ADD:
-                GetDigits (proc, &num2, &num1);
-                num3 = num1 + num2;
-                StackPush (&proc->stk, &num3);
-                printf ("push %d\n", num3);
-                num1 = POISON;
-                num2 = POISON;
+                MATH_COM (ADD, +)
                 break;
 
             case SUB:
-                GetDigits (proc, &num2, &num1);
-                num3 = num1 - num2;
-                StackPush (&proc->stk, &num3);
-                printf ("push %d\n",  num3);
-                num1 = POISON;
-                num2 = POISON;
+                MATH_COM (SUB, -)
                 break;
 
             case DIV:
-                GetDigits (proc, &num2, &num1);
-                num3 = num1 / num2;
-                StackPush (&proc->stk, &num3);
-                printf ("push %d\n",  num3);
-                num1 = POISON;
-                num2 = POISON;
+                MATH_COM (DIV, /)
                 break;
 
             case MUL:
-                GetDigits (proc, &num2, &num1);
-                num3 = num1 * num2;
-                StackPush (&proc->stk, &num3);
-                printf ("push %d\n",  num3);
-                num1 = POISON;
-                num2 = POISON;
+                MATH_COM (MUL, *)
                 break;
 
             case OUT:
@@ -91,7 +73,7 @@ int ObeyCommands (FILE* resultF, struct Cpu* proc)
             case HLT:
                 fclose (resultF);
                 CpuDtor (proc);
-                return 0;
+                return SUCCESS;
                 break;
 
             case JMP:
@@ -99,46 +81,27 @@ int ObeyCommands (FILE* resultF, struct Cpu* proc)
                 break;
 
             case JB:
-                if (proc->stk.data[proc->stk.size - 2] < proc->stk.data[proc->stk.size - 1])
-                    IP = JumpTo (proc, IP);
-                StackPop (&proc->stk, &num1);
-                num1 = POISON;
+                JUMP (JB, <)
                 break;
 
             case JBE:
-                if (proc->stk.data[proc->stk.size - 2] <= proc->stk.data[proc->stk.size - 1])
-                    IP = JumpTo (proc, IP);
-                StackPop (&proc->stk, &num1);
-                num1 = POISON;
+                JUMP (JBE, <=)
                 break;
 
             case JA:
-                if (proc->stk.data[proc->stk.size - 2] > proc->stk.data[proc->stk.size - 1])
-                    IP = JumpTo (proc, IP);
-                StackPop (&proc->stk, &num1);
-                num1 = POISON;
+                JUMP (JA, >)
                 break;
 
             case JAE:
-                if (proc->stk.data[proc->stk.size - 2] >= proc->stk.data[proc->stk.size - 1])
-                    IP = JumpTo (proc, IP);
-                StackPop (&proc->stk, &num1);
-                num1 = POISON;
+                JUMP (JAE, >=)
                 break;
 
             case JE:
-                if (proc->stk.data[proc->stk.size - 2] == proc->stk.data[proc->stk.size - 1])
-                    IP = JumpTo (proc, IP);
-                StackPop (&proc->stk, &num1);
-                num1 = POISON;
+                JUMP (JE, ==)
                 break;
 
             case JNE:
-                if (proc->stk.data[proc->stk.size - 2] != proc->stk.data[proc->stk.size - 1])
-                    IP = JumpTo (proc, IP);
-                StackPop (&proc->stk, &num1);
-                // POP(&num1);
-                num1 = POISON;
+                JUMP (JNE, !=)
                 break;
 
             case CALL:
@@ -155,10 +118,10 @@ int ObeyCommands (FILE* resultF, struct Cpu* proc)
                 break;
         }
     }
-
     fclose (resultF);
     CpuDtor (proc);
-    return 0;
+
+    return SUCCESS;
 }
 
 void CpuCtor (Cpu* proc)
@@ -191,17 +154,15 @@ void CpuDtor (struct Cpu* proc)
     free (proc->ram);
 }
 
-void FillArray (struct Cpu* proc)
+int FillArray (struct Cpu* proc)
 {
     struct Strings Str = {0};
-    FILE* bytecode = fopen (fileSourse, "rb");
-    assert (bytecode != NULL);
+    FOPEN (bytecode, fileSourse, "rb")
 
     Str.fileSize = FileSize (bytecode);   // measure the size of a bytecode
 
     proc->arraySize = Str.fileSize;
-    proc->arrayCommand = (char*) calloc (proc->arraySize, sizeof(char));
-    assert (proc->arrayCommand != NULL);
+    CALLOC (proc->arrayCommand, char, proc->arraySize)
 
     if (fread (proc->arrayCommand, sizeof(char), Str.fileSize, bytecode) != Str.fileSize)
         fprintf (ErrorFile, "--Error. file reading error--\n");
@@ -218,23 +179,26 @@ void GetDigits (struct Cpu* proc, elem_t* num2, elem_t* num1)
 
 size_t JumpTo (struct Cpu* proc, size_t IP)
 {
-    printf ("jump to %d\n", GetArgument (proc, IP));
+   // printf ("jump to %d\n", GetArgument (proc, IP));
     return  GetArgument (proc, IP) - COM_SIZE;
 }
 
 char GetCommand (struct Cpu* proc, size_t IP)
 {
     char command = *(char*) (proc->arrayCommand + IP);
-    printf ("{%d}\n", command);
+   // printf ("{%d}\n", command);
     return command;
 }
 
 elem_t GetArgument (struct Cpu* proc, size_t IP)
 {
     int argument = *(int*) (proc->arrayCommand + IP + COM_SIZE);
-    printf ("{%d}\n", argument);
+    //printf ("{%d}\n", argument);
     return argument;
 }
+
+
+
 
 void Push (struct Cpu* proc, size_t IP)
 {
@@ -277,8 +241,8 @@ void Pop (struct Cpu* proc, size_t* IP)
     switch (proc->arrayCommand[*IP + 1] & MASK)
     {
         case NUM_MOD:
-            StackPush (&proc->stk, &arg);
-            printf ("push %d\n", arg);
+            StackPop (&proc->stk, &arg); //
+            printf ("pop %d\n", arg);
             break;
 
         case REG_MOD:
