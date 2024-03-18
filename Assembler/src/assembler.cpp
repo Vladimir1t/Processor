@@ -1,6 +1,6 @@
 #include "..\include\assembler.h"
 
-FILE* error_file_assembler = fopen ("..\\..\\Log\\error_assembler.txt", "w");
+FILE* error_file_assembler = fopen ("Log\\error_assembler.txt", "w");
 
 int main (int argc, char* argv[])
 {
@@ -133,7 +133,7 @@ int GetArgument (char* command, char* buffer, size_t* ptr, struct mark* allMarks
             if (!strcmp (allMarks[j].name, command))
             {
                 arg = allMarks[j].address;
-                printf ("adr %d\n", arg);
+                //printf ("adr %d\n", arg);
             }
         }
     }

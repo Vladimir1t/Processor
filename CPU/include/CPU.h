@@ -36,7 +36,7 @@ size_t JumpTo (struct Cpu* proc, size_t IP);
 
 char GetCommand (struct Cpu* proc, size_t IP);
 
-elem_t GetArgument (struct Cpu* proc, size_t IP);
+elem_t* GetArgument (struct Cpu* proc, size_t IP, char mode);
 
 void Push (struct Cpu* proc, size_t IP);
 

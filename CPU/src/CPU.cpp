@@ -1,6 +1,6 @@
 #include "..\include\CPU.h"
 
-FILE* ErrorFile = fopen ("..\\..\\Log\\error_CPU.txt", "w");
+FILE* ErrorFile = fopen ("Log\\error_CPU.txt", "w");
 
 int main ()
 {
@@ -9,7 +9,7 @@ int main ()
 
     FillArray (&proc);
                                        // get bytecode from sourse file
-    FILE* resultF = fopen ("..\\..\\Log\\result.txt", "w");
+    FILE* resultF = fopen ("Log\\result.txt", "w");
 
     int result = ObeyCommands (resultF, &proc);
     if (result == SUCCESS)
@@ -27,16 +27,19 @@ int ObeyCommands (FILE* resultF, struct Cpu* proc)
 
     for (size_t IP = 0; IP < proc->arraySize; IP += COM_SIZE)
     {
+       char command = GetCommand (proc, IP);
+       elem_t* arg = GetArgument (proc, IP, proc->arrayCommand[IP + 1] & MASK);
 
-        switch (GetCommand (proc, IP))
+        switch (command)
         {
             case PUSH:
-                Push (proc, IP);
-                IP += ARG_SIZE;
+                PUSH_COM (arg)
+                //Push (proc, IP);
                 break;
 
             case POP:
-                Pop (proc, &IP);
+                POP_COM (arg)
+                //Pop (proc, &IP);
                 break;
 
             case ADD:
@@ -179,8 +182,9 @@ void GetDigits (struct Cpu* proc, elem_t* num2, elem_t* num1)
 
 size_t JumpTo (struct Cpu* proc, size_t IP)
 {
-   // printf ("jump to %d\n", GetArgument (proc, IP));
-    return  GetArgument (proc, IP) - COM_SIZE;
+    elem_t address =  *(elem_t*) (proc->arrayCommand + IP + COM_SIZE) - COM_SIZE;
+    //printf ("[%d]", address);
+    return address;
 }
 
 char GetCommand (struct Cpu* proc, size_t IP)
@@ -190,16 +194,29 @@ char GetCommand (struct Cpu* proc, size_t IP)
     return command;
 }
 
-elem_t GetArgument (struct Cpu* proc, size_t IP)
+elem_t* GetArgument (struct Cpu* proc, size_t IP, char mode)
 {
-    int argument = *(int*) (proc->arrayCommand + IP + COM_SIZE);
-    //printf ("{%d}\n", argument);
-    return argument;
+    switch (mode)
+    {
+        case NUM_MOD:
+            return (elem_t*) (proc->arrayCommand + IP + COM_SIZE);
+            break;
+
+        case REG_MOD:
+            for (int j = 0; j < REGISTRS_NUM; j++)
+            {
+                if (*(elem_t*) (proc->arrayCommand + IP + COM_SIZE) ==
+                    (elem_t)   reg[j].name[1] - (elem_t) reg[j].name[0])
+                    return &reg[j].value;
+            }
+            break;
+
+        case RAM_MOD:
+            elem_t adr =  *(elem_t*) (proc->arrayCommand + IP +COM_SIZE);
+            return proc->ram + adr;
+    }
 }
-
-
-
-
+/*
 void Push (struct Cpu* proc, size_t IP)
 {
     elem_t arg = GetArgument (proc, IP);
@@ -241,7 +258,7 @@ void Pop (struct Cpu* proc, size_t* IP)
     switch (proc->arrayCommand[*IP + 1] & MASK)
     {
         case NUM_MOD:
-            StackPop (&proc->stk, &arg); //
+            StackPop (&proc->stk, &arg);
             printf ("pop %d\n", arg);
             break;
 
@@ -268,7 +285,7 @@ void Pop (struct Cpu* proc, size_t* IP)
             break;
     }
 }
-
+            */
 
 
 

@@ -1,19 +1,27 @@
 #ifndef DSL_H_INCLUDED
 #define DSL_H_INCLUDED
 
-/* Library of defines */
+  /* Library of defines */
 
-//#define PUSH ()
+#define PUSH_COM(arg)            \
+    if (arg == NULL)             \
+        return NULL_PTR;         \
+    StackPush (&proc->stk, arg); \
+     IP += ARG_SIZE;             \
 
-
-//#define POP ()
-
+#define POP_COM(arg)                     \
+    do                                   \
+    {                                    \
+        elem_t element = POISON;         \
+        StackPop (&proc->stk, &element); \
+        *arg = element;                  \
+        IP += ARG_SIZE;                  \
+    }                                    \
+    while (0);                           \
 
 //#define checkResult ()
 
-
 //#define procDump ()
-
 
 #define checkPtr(ptr)     \
     if (ptr == NULL)      \
