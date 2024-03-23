@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "..\..\Assembler\include\assembler.h"
 #include "..\..\Stack\include\stack.h"

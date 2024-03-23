@@ -1,0 +1,137 @@
+in
+pop ax
+in 
+pop bx
+in
+pop cx    #обработать лишние символы
+
+push ax
+push 0
+jne quadr:
+
+pop n
+push bx
+push 0
+jne liner:
+
+pop n
+push cx
+push 0
+jne pr_nR:  
+
+pop n
+jmp prInf:
+
+quadr:
+  call sol_q:
+  hlt
+
+liner:
+  call sol_l:
+  push dx
+  out
+  hlt
+
+#get a, b, c from ax, bx and cx
+#put D to dx
+discr:
+  push bx      #calculate b^2
+  push bx
+  mul
+  push 4
+  push ax      #calculate 4ac
+  push cx
+  mul
+  mul
+  sub         #calculate D = b^2 - 4ac
+  pop dx
+  push dx
+  out
+  pop n #pop n
+  ret
+
+sol_q:
+call discr:
+
+  push dx
+  push 0
+  jb qr_nR:
+  
+  push 0
+  je qr_Or:
+ 
+  push 0 
+  ja qr_Tr:
+
+qr_Or:
+  pop n
+  push bx
+  sub
+  push 2
+  push ax
+  mul
+  div
+  out
+  ret
+
+qr_nR:
+  call pr_nR:
+  ret
+
+qr_Tr:
+  pop n
+  pop n
+  push 0    
+  push bx
+  sub
+  push dx
+  sqrt
+  sub
+  push ax
+  push 2
+  mul
+  div
+  out
+
+  push 0
+  push bx
+  sub
+  push dx
+  sqrt
+  add
+  push ax
+  push 2
+  mul
+  div
+  out
+  ret
+  ret
+
+sol_l:
+  push 0
+  push cx
+  sub
+  push bx
+  div
+  pop dx # pop n
+  ret
+
+pr_nR:
+  pop n
+  pop n
+  push -111
+  push -111
+  push -111
+  push -111
+  push -111
+  out
+  ret
+
+prInf:
+  push 888
+  push 888
+  push 888
+  push 888
+  push 888
+  out
+  

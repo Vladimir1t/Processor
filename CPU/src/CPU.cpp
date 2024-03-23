@@ -7,8 +7,8 @@ int main ()
     struct Cpu proc = {0};
     CpuCtor (&proc);
 
-    FillArray (&proc);
-                                       // get bytecode from sourse file
+    FillArray (&proc);                                 // get bytecode from sourse file
+
     FILE* resultF = fopen ("Log\\result.txt", "w");
 
     int result = ObeyCommands (resultF, &proc);
@@ -34,12 +34,10 @@ int ObeyCommands (FILE* resultF, struct Cpu* proc)
         {
             case PUSH:
                 PUSH_COM (arg)
-                //Push (proc, IP);
                 break;
 
             case POP:
                 POP_COM (arg)
-                //Pop (proc, &IP);
                 break;
 
             case ADD:
@@ -58,29 +56,24 @@ int ObeyCommands (FILE* resultF, struct Cpu* proc)
                 MATH_COM (MUL, *)
                 break;
 
+            case SQRT:
+                MATH_SQRT (SQRT)
+                break;
+
             case OUT:
-                for (int j = 0; j < proc->stk.size; j++)
-                {
-                    fprintf (resultF, "[%d] %d\n", j, proc->stk.data[j]);
-                    printf ("[%d] %d\n", j, proc->stk.data[j]);
-                }
+                OUT_COM ()
                 break;
 
             case IN:
-                printf ("write a number\n");
-                scanf (SPEC, &num1);
-                StackPush (&proc->stk, &num1);
-                num1 = POISON;
+                IN_COM ()
                 break;
 
             case HLT:
-                fclose (resultF);
-                CpuDtor (proc);
-                return SUCCESS;
+                HLT_COM ()
                 break;
 
             case JMP:
-                JumpTo (proc, IP);
+                IP = JumpTo (proc, IP);
                 break;
 
             case JB:
@@ -108,16 +101,11 @@ int ObeyCommands (FILE* resultF, struct Cpu* proc)
                 break;
 
             case CALL:
-                address = IP;
-                StackPush (&proc->stkAdr, &address);
-                IP = JumpTo (proc, IP);
-                address = POISON;
+                CALL_COM (IP)
                 break;
 
             case RET:
-                StackPop (&proc->stkAdr, &address);
-                IP = address;
-                address = POISON;
+                RET_COM (IP)
                 break;
         }
     }
@@ -190,7 +178,7 @@ size_t JumpTo (struct Cpu* proc, size_t IP)
 char GetCommand (struct Cpu* proc, size_t IP)
 {
     char command = *(char*) (proc->arrayCommand + IP);
-   // printf ("{%d}\n", command);
+    //printf ("{%d}\n", command);
     return command;
 }
 
@@ -214,79 +202,9 @@ elem_t* GetArgument (struct Cpu* proc, size_t IP, char mode)
         case RAM_MOD:
             elem_t adr =  *(elem_t*) (proc->arrayCommand + IP +COM_SIZE);
             return proc->ram + adr;
-    }
-}
-/*
-void Push (struct Cpu* proc, size_t IP)
-{
-    elem_t arg = GetArgument (proc, IP);
-    elem_t adr = POISON;
-
-    switch (proc->arrayCommand[IP + 1] & MASK)
-    {
-        case NUM_MOD:
-            StackPush (&proc->stk, &arg);
-            printf ("push %d\n", arg);
-            break;
-
-        case REG_MOD:
-            for (int j = 0; j < REGISTRS_NUM; j++)
-                {
-                    if (GetArgument (proc, IP) == (elem_t) reg[j].name[1] - (elem_t) reg[j].name[0])
-                    {
-                        StackPush (&proc->stk, &reg[j].value);
-                        printf ("pushed from reg = %d\n", reg[j].value);
-                        //reg[j].value = POISON;
-                        break;
-                    }
-                }
-            break;
-
-        case RAM_MOD:
-            adr = GetArgument (proc, IP);
-            arg = proc->ram[adr];
-            StackPush (&proc->stk, &arg);
             break;
     }
 }
-
-void Pop (struct Cpu* proc, size_t* IP)
-{
-    elem_t arg = POISON;
-    elem_t adr = POISON;
-
-    switch (proc->arrayCommand[*IP + 1] & MASK)
-    {
-        case NUM_MOD:
-            StackPop (&proc->stk, &arg);
-            printf ("pop %d\n", arg);
-            break;
-
-        case REG_MOD:
-             for (int j = 0; j < REGISTRS_NUM; j++)
-                {
-                    if (GetArgument (proc, *IP) == (elem_t) reg[j].name[1] - (elem_t) reg[j].name[0])
-                    {
-                        StackPop (&proc->stk, &arg);
-                        printf ("popped into reg = %d\n", arg);
-                        reg[j].value = arg;
-                        arg = POISON;
-                        *IP += ARG_SIZE;
-                        break;
-                    }
-                }
-            break;
-
-        case RAM_MOD:
-            adr = GetArgument (proc, *IP);
-            StackPop (&proc->stk, &arg);
-            proc->ram[adr] = arg;
-            (*IP) += ARG_SIZE;
-            break;
-    }
-}
-            */
-
 
 
 

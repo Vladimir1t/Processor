@@ -7,7 +7,7 @@ int main (int argc, char* argv[])
     if (argc < 3)
         fprintf (error_file_assembler, "-- too few command arguments --\n");
 
-    struct Strings Str = {0};          /*struct: textPointer, StringsP[], fileSize, nStrings*/
+    struct Strings Str = {0};       /*struct: textPointer, StringsP[], fileSize, nStrings*/
     Str.nStrings = 1;
 
     FOPEN (sourseF, argv[1], "rb")
@@ -128,12 +128,13 @@ int GetArgument (char* command, char* buffer, size_t* ptr, struct mark* allMarks
     }
     else if (strchr (command, ':') != NULL)
     {
+        //printf ("fjhjk\n");
         for (int j = 0; j < marksNum; j++)
         {
             if (!strcmp (allMarks[j].name, command))
             {
                 arg = allMarks[j].address;
-                //printf ("adr %d\n", arg);
+                printf ("adr %d\n", arg);
             }
         }
     }
@@ -181,6 +182,7 @@ int FindMarks (struct Strings* Str, size_t* len, struct mark* allMarks, size_t* 
             memcpy (allMarks[*marksNum].name, pointer - (MARK_LEN - 1), MARK_LEN);
             //printf ("mark %s\n", allMarks[*marksNum].name);
             allMarks[*marksNum].address = ptr;
+            //printf ("[%d]\n", allMarks[*marksNum].address);
             (*marksNum)++;
 
             REALLOC (allMarks, struct mark, (*marksNum + 1))
@@ -190,7 +192,10 @@ int FindMarks (struct Strings* Str, size_t* len, struct mark* allMarks, size_t* 
     *len = ptr;
 
     for (int i = 0; i < *marksNum; i++)
+    {
         printf ("[%d] %s\n", i, allMarks[i].name);
+        //printf ("%d\n", allMarks[i].address);
+    }
 
     return SUCCESS;
 }

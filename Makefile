@@ -1,6 +1,15 @@
-All : Ass proc
+equation : Ass proc
+	Assembler\assembler.exe Programs\equation.txt Assembler\res_ass.txt
+	CPU\proc.exe
+
+fib : Ass proc
+	Assembler\assembler.exe Programs\fib.txt Assembler\res_ass.txt
+	CPU\proc.exe
+
+factorial : Ass proc
 	Assembler\assembler.exe Programs\factorial.txt Assembler\res_ass.txt
 	CPU\proc.exe
+
 	
 Res_Ass : Ass
 	Assembler\assembler.exe Programs\factorial.txt Assembler\res_ass.txt

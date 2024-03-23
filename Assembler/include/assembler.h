@@ -52,7 +52,8 @@ enum COMMANDS
     JE     = 42,
     JNE    = 43,
     CALL   = 21,
-    RET    = 22
+    RET    = 22,
+    SQRT   = 19
 
 };
 
@@ -82,7 +83,8 @@ struct operation AllCommands[] =
     {"je",   JE,   HAS_ARG},
     {"jne",  JNE,  HAS_ARG},
     {"call", CALL, HAS_ARG},
-    {"ret",  RET,  NO_ARG}
+    {"ret",  RET,  NO_ARG},
+    {"sqrt", SQRT, NO_ARG}
 };
 
 const size_t COMMANDS_NUM = sizeof (AllCommands) / sizeof (AllCommands[0]);
