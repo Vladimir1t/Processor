@@ -1,19 +1,29 @@
 in          # get number from user
+push 1
+jbe _end_:
 call fact_: # call fuction factorial
 out         # print result
 hlt
 
 fact_:
-    pop ax
-    push ax
-    push ax
+  pop ax
+  push ax
+  push ax
+  push 1
+  sub
+  pop ax
+  push ax
     push 1
-    sub
-    pop ax
-    push ax
-        push 1
-        jbe skip_:  # if number <= 1
-    call fact_:
-    skip_:          # stop the program
-    mul
-    ret
+    jbe skip_:  # if number <= 1
+  call fact_:
+
+skip_:          # stop the program
+  mul
+  ret
+
+_end_:           # if input number <= 1
+  pop n
+  push 1
+  out
+  hlt
+ 

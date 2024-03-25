@@ -8,22 +8,23 @@
 #include "..\..\Assembler\include\assembler.h"
 #include "..\..\Stack\include\stack.h"
 #include "..\..\Onegin\include\onegin.h"
+#include "..\..\Library\commands.h"
 
-const char*  fileSourse  = "Assembler\\res_ass.txt";  // bytecode
-const char   MASK        = 3;                         // 0000 0011
-const size_t RAM_SIZE    = 50;                        // size of a RAM
+const char*  fileSourse  = "Assembler\\res_ass.txt";  /* bytecode */
+const char   MASK        = 3;                         /* 0000 0011 */
+const size_t RAM_SIZE    = 50;                        /* size of a RAM */
 
 struct Cpu
 {
-    Stack   stk;           // stack for arguments
-    Stack   stkAdr;        // stack for addresses
-    char*   arrayCommand;  // buffer of commands and arguments
-    size_t  arraySize;     // size of the buffer
-    elem_t* ram;           // random access memory
+    Stack   stk;           /* stack for arguments */
+    Stack   stkAdr;        /* stack for addresses */
+    char*   arrayCommand;  /* buffer of commands and arguments */
+    size_t  arraySize;     /* size of the buffer */
+    elem_t* ram;           /* random access memory */
     elem_t  ramSize;
 };
 
-int ObeyCommands (FILE* resultF, struct Cpu* proc);
+int ExecuteCommands (FILE* resultF, struct Cpu* proc);
 
 void CpuCtor (struct Cpu* proc);
 

@@ -14,15 +14,13 @@ _fib_:
   
   push 3
   sub
-
   pop ax
   push 1
   push 1
-  
   pop bx
   pop cx
 
-cicl_:    #main fib
+cicl_:          #main fib
   push ax
   push 1
   sub
@@ -37,11 +35,12 @@ cicl_:    #main fib
   push ax
   push 0
   jae cicl_:
+
   pop n
   push cx
   ret
 
-_end_:
+_end_:         #case 1 or 2
   pop n
-  push 1         #case 1 or 2
+  push 1         
   ret

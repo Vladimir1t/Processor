@@ -47,7 +47,6 @@ int ReadSourseFile (FILE* sourseF, struct Strings* Str)
     StringsPointerRead (Str, isR);                                // divide text into array of strings
 
     StrPrint (Str);
-    //PrintSymbols (Str);
 
     return 0;
  }
@@ -128,7 +127,6 @@ int GetArgument (char* command, char* buffer, size_t* ptr, struct mark* allMarks
     }
     else if (strchr (command, ':') != NULL)
     {
-        //printf ("fjhjk\n");
         for (int j = 0; j < marksNum; j++)
         {
             if (!strcmp (allMarks[j].name, command))
@@ -146,7 +144,6 @@ int GetArgument (char* command, char* buffer, size_t* ptr, struct mark* allMarks
 
     *ptr += COM_SIZE;
     memcpy (buffer + *ptr * sizeof (buffer[0]), &arg, sizeof (int));
-    //printf ("word[1] = %d\n", *(int*) (buffer + *ptr));
     *ptr += ARG_SIZE;
 
     return SUCCESS;
@@ -154,11 +151,11 @@ int GetArgument (char* command, char* buffer, size_t* ptr, struct mark* allMarks
 
 int FindMarks (struct Strings* Str, size_t* len, struct mark* allMarks, size_t* marksNum)
 {
-    char   sep[]    = {' ', '\0', '\n'};                      // skip these symbols while reading file
-    char*  command  = NULL;                                   // command from the array of the text
-    size_t nStr     = 0;                                      // number of a current string
-    size_t ptr      = 0;                                      // current address in bytecode
-    char*  pointer  = NULL;                                   // address of ':' in text
+    char   sep[]    = {' ', '\0', '\n'};                    // skip these symbols while reading file
+    char*  command  = NULL;                                 // command from the array of the text
+    size_t nStr     = 0;                                    // number of a current string
+    size_t ptr      = 0;                                    // current address in bytecode
+    char*  pointer  = NULL;                                 // address of ':' in text
 
     while (nStr < Str->nStrings)
     {
@@ -194,7 +191,6 @@ int FindMarks (struct Strings* Str, size_t* len, struct mark* allMarks, size_t* 
     for (int i = 0; i < *marksNum; i++)
     {
         printf ("[%d] %s\n", i, allMarks[i].name);
-        //printf ("%d\n", allMarks[i].address);
     }
 
     return SUCCESS;

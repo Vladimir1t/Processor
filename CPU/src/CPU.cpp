@@ -11,14 +11,14 @@ int main ()
 
     FILE* resultF = fopen ("Log\\result.txt", "w");
 
-    int result = ObeyCommands (resultF, &proc);
+    int result = ExecuteCommands (resultF, &proc);
     if (result == SUCCESS)
         printf ("PROGRAM HAS FINISHED SUCCESSFULLY\n");
 
     return 0;
 }
 
-int ObeyCommands (FILE* resultF, struct Cpu* proc)
+int ExecuteCommands (FILE* resultF, struct Cpu* proc)
 {
     elem_t num1    = POISON,
            num2    = POISON,

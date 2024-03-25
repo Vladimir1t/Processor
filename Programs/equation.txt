@@ -37,6 +37,7 @@ liner:
 
 #get a, b, c from ax, bx and cx
 #put D to dx
+
 discr:
   push bx      #calculate b^2
   push bx
@@ -46,16 +47,17 @@ discr:
   push cx
   mul
   mul
-  sub         #calculate D = b^2 - 4ac
+  sub          #calculate D = b^2 - 4ac
   pop dx
   push dx
-  out
-  pop n #pop n
+  
+  pop n 
   ret
 
 sol_q:
-call discr:
 
+call discr:
+  pop n
   push dx
   push 0
   jb qr_nR:
@@ -66,8 +68,7 @@ call discr:
   push 0 
   ja qr_Tr:
 
-qr_Or:
-  pop n
+qr_Or:    # one root
   push bx
   sub
   push 2
@@ -75,14 +76,14 @@ qr_Or:
   mul
   div
   out
-  ret
+  hlt
 
 qr_nR:
   call pr_nR:
   ret
 
-qr_Tr:
-  pop n
+qr_Tr:    # two roots
+  
   pop n
   push 0    
   push bx
@@ -93,9 +94,7 @@ qr_Tr:
   push ax
   push 2
   mul
-  div
-  out
-
+  div 
   push 0
   push bx
   sub
@@ -110,7 +109,8 @@ qr_Tr:
   ret
   ret
 
-sol_l:
+sol_l:    # solve linear 
+  pop n
   push 0
   push cx
   sub
@@ -119,8 +119,7 @@ sol_l:
   pop dx # pop n
   ret
 
-pr_nR:
-  pop n
+pr_nR:    # no roots
   pop n
   push -111
   push -111
@@ -128,13 +127,14 @@ pr_nR:
   push -111
   push -111
   out
-  ret
+  hlt 
 
-prInf:
+prInf:    # infintive number of roots
   push 888
   push 888
   push 888
   push 888
   push 888
   out
+  hlt
   
