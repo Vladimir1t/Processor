@@ -1,6 +1,6 @@
 #include "..\include\assembler.h"
 
-FILE* error_file_assembler = fopen ("Log\\error_assembler.txt", "w");
+static FILE* error_file_assembler = fopen ("Log\\error_assembler.txt", "w");
 
 int main (int argc, char* argv[])
 {
@@ -10,11 +10,11 @@ int main (int argc, char* argv[])
     struct Strings Str = {0};       /*struct: textPointer, StringsP[], fileSize, nStrings*/
     Str.nStrings = 1;
 
-    FOPEN (sourseF, argv[1], "rb")
+    FOPEN (sourseF, argv[1], "rb");
     if (sourseF == NULL)
         fprintf (error_file_assembler, "-- sourseF wasn't read --\n");
 
-    FOPEN (resultF, argv[2], "wb")
+    FOPEN (resultF, argv[2], "wb");
     if (resultF == NULL)
         fprintf (error_file_assembler, "-- resultF wasn't read --\n");
 
@@ -33,7 +33,7 @@ int ReadSourseFile (FILE* sourseF, struct Strings* Str)
 
     Str->fileSize = FileSize (sourseF);                           // measures a size of the sourseF
 
-    CALLOC (Str->textPointer, char, Str->fileSize + 1)
+    CALLOC (Str->textPointer, char, Str->fileSize + 1);
 
     if (fread (Str->textPointer, sizeof(char), Str->fileSize, sourseF) != Str->fileSize)
         fprintf (error_file_assembler, "ERROR. wrong fileSize\n");
@@ -42,7 +42,7 @@ int ReadSourseFile (FILE* sourseF, struct Strings* Str)
 
     fileFormat isR = StringsCount (Str);                          // count a number of strings
 
-    CALLOC (Str->stringsP, struct String, Str->nStrings)
+    CALLOC (Str->stringsP, struct String, Str->nStrings);
 
     StringsPointerRead (Str, isR);                                // divide text into array of strings
 
@@ -63,12 +63,12 @@ int MakeBytecode (FILE* resultF, struct Strings* Str)
     size_t       marksNum   = 0;                                   // number of marks in program
     struct mark* allMarks   = NULL;
 
-    CALLOC (allMarks, struct mark, 2)
+    CALLOC (allMarks, struct mark, 2);
 
     if (FindMarks (Str, &len, allMarks, &marksNum) != SUCCESS)
         return ERROR;
 
-    CALLOC (buffer, char, len)
+    CALLOC (buffer, char, len);
 
     while (nStr < Str->nStrings)
     {
@@ -182,7 +182,7 @@ int FindMarks (struct Strings* Str, size_t* len, struct mark* allMarks, size_t* 
             //printf ("[%d]\n", allMarks[*marksNum].address);
             (*marksNum)++;
 
-            REALLOC (allMarks, struct mark, (*marksNum + 1))
+            REALLOC (allMarks, struct mark, (*marksNum + 1));
         }
         nStr++;
     }

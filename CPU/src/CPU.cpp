@@ -1,6 +1,6 @@
 #include "..\include\CPU.h"
 
-FILE* ErrorFile = fopen ("Log\\error_CPU.txt", "w");
+static FILE* ErrorFile = fopen ("Log\\error_CPU.txt", "w");
 
 int main ()
 {
@@ -9,7 +9,7 @@ int main ()
 
     FillArray (&proc);                                 // get bytecode from sourse file
 
-    FILE* resultF = fopen ("Log\\result.txt", "w");
+    FOPEN (resultF, "Log\\result.txt", "w");
 
     int result = ExecuteCommands (resultF, &proc);
     if (result == SUCCESS)
@@ -33,43 +33,43 @@ int ExecuteCommands (FILE* resultF, struct Cpu* proc)
         switch (command)
         {
             case PUSH:
-                PUSH_COM (arg)
+                PUSH_COM (arg);
                 break;
 
             case POP:
-                POP_COM (arg)
+                POP_COM (arg);
                 break;
 
             case ADD:
-                MATH_COM (ADD, +)
+                MATH_COM (ADD, +);
                 break;
 
             case SUB:
-                MATH_COM (SUB, -)
+                MATH_COM (SUB, -);
                 break;
 
             case DIV:
-                MATH_COM (DIV, /)
+                MATH_COM (DIV, /);
                 break;
 
             case MUL:
-                MATH_COM (MUL, *)
+                MATH_COM (MUL, *);
                 break;
 
             case SQRT:
-                MATH_SQRT (SQRT)
+                MATH_SQRT (SQRT);
                 break;
 
             case OUT:
-                OUT_COM ()
+                OUT_COM ();
                 break;
 
             case IN:
-                IN_COM ()
+                IN_COM ();
                 break;
 
             case HLT:
-                HLT_COM ()
+                HLT_COM ();
                 break;
 
             case JMP:
@@ -77,35 +77,35 @@ int ExecuteCommands (FILE* resultF, struct Cpu* proc)
                 break;
 
             case JB:
-                JUMP (JB, <)
+                JUMP (JB, <);
                 break;
 
             case JBE:
-                JUMP (JBE, <=)
+                JUMP (JBE, <=);
                 break;
 
             case JA:
-                JUMP (JA, >)
+                JUMP (JA, >);
                 break;
 
             case JAE:
-                JUMP (JAE, >=)
+                JUMP (JAE, >=);
                 break;
 
             case JE:
-                JUMP (JE, ==)
+                JUMP (JE, ==);
                 break;
 
             case JNE:
-                JUMP (JNE, !=)
+                JUMP (JNE, !=);
                 break;
 
             case CALL:
-                CALL_COM (IP)
+                CALL_COM (IP);
                 break;
 
             case RET:
-                RET_COM (IP)
+                RET_COM (IP);
                 break;
         }
     }
@@ -148,12 +148,12 @@ void CpuDtor (struct Cpu* proc)
 int FillArray (struct Cpu* proc)
 {
     struct Strings Str = {0};
-    FOPEN (bytecode, fileSourse, "rb")
+    FOPEN (bytecode, fileSourse, "rb");
 
     Str.fileSize = FileSize (bytecode);   // measure the size of a bytecode
 
     proc->arraySize = Str.fileSize;
-    CALLOC (proc->arrayCommand, char, proc->arraySize)
+    CALLOC (proc->arrayCommand, char, proc->arraySize);
 
     if (fread (proc->arrayCommand, sizeof(char), Str.fileSize, bytecode) != Str.fileSize)
         fprintf (ErrorFile, "--Error. file reading error--\n");

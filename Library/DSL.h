@@ -7,7 +7,7 @@
     if (arg == NULL)             \
         return NULL_PTR;         \
     StackPush (&proc->stk, arg); \
-     IP += ARG_SIZE;             \
+     IP += ARG_SIZE;
 
 
 #define POP_COM(arg)                     \
@@ -18,7 +18,7 @@
         *arg = element;                  \
         IP += ARG_SIZE;                  \
     }                                    \
-    while (0);                           \
+    while (0)                           \
 
 
 #define checkPtr(ptr)     \
@@ -34,7 +34,7 @@
             return REALLOC_ERROR;                            \
         elem = (type*) clTmp;                                \
     }                                                        \
-    while (0);                                               \
+    while (0)                                                \
 
 
 #define CALLOC(elem, type, size)                     \
@@ -45,7 +45,7 @@
             return CALLOC_ERROR;                     \
         elem = (type*) clTmp;                        \
     }                                                \
-    while (0);                                       \
+    while (0)                                        \
 
 
 #define FOPEN(ptr, name, mode)       \
@@ -95,14 +95,14 @@
     {                                                          \
         fprintf (resultF, "[%d] %d\n", j, proc->stk.data[j]);  \
         printf ("[%d] %d\n", j, proc->stk.data[j]);            \
-    }                                                          \
+    }
 
 
 #define IN_COM()                           \
     printf ("write a number\n");           \
     scanf (SPEC, &num1);                   \
     StackPush (&proc->stk, &num1);         \
-    num1 = POISON;                         \
+    num1 = POISON;
 
 
 #define HLT_COM()        \
