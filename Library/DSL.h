@@ -18,12 +18,12 @@
         *arg = element;                  \
         IP += ARG_SIZE;                  \
     }                                    \
-    while (0)                           \
+    while (0)
 
 
 #define checkPtr(ptr)     \
     if (ptr == NULL)      \
-        return NULL_PTR;  \
+        return NULL_PTR;
 
 
 #define REALLOC(elem, type, size)                            \
@@ -34,7 +34,7 @@
             return REALLOC_ERROR;                            \
         elem = (type*) clTmp;                                \
     }                                                        \
-    while (0)                                                \
+    while (0)
 
 
 #define CALLOC(elem, type, size)                     \
@@ -45,13 +45,13 @@
             return CALLOC_ERROR;                     \
         elem = (type*) clTmp;                        \
     }                                                \
-    while (0)                                        \
+    while (0)
 
 
 #define FOPEN(ptr, name, mode)       \
     FILE* ptr = fopen (name, mode);  \
     if (ptr == NULL)                 \
-        return OPEN_ERROR;           \
+        return OPEN_ERROR;
 
 
 #define MATH_COM(command, operand)   \
@@ -59,14 +59,14 @@
     num3 = num1 operand num2;        \
     StackPush (&proc->stk, &num3);   \
     num1 = POISON;                   \
-    num2 = POISON;                   \
+    num2 = POISON;
 
 
 #define MATH_SQRT(command)             \
     StackPop (&proc->stk, &num1);      \
     num1 = (elem_t) sqrt(num1);        \
     StackPush (&proc->stk, &num1);     \
-    num1 = POISON;                     \
+    num1 = POISON;
 
 
 #define JUMP(command, operand)                        \
@@ -74,20 +74,20 @@
         proc->stk.data[proc->stk.size - 1])           \
         IP = JumpTo (proc, IP);                       \
     StackPop (&proc->stk, &num1);                     \
-    num1 = POISON;                                    \
+    num1 = POISON;
 
 
 #define CALL_COM(IP)                         \
     address = IP;                            \
     StackPush (&proc->stkAdr, &address);     \
     IP = JumpTo (proc, IP);                  \
-    address = POISON;                        \
+    address = POISON;
 
 
 #define RET_COM(IP)                          \
     StackPop (&proc->stkAdr, &address);      \
     IP = address;                            \
-    address = POISON;                        \
+    address = POISON;
 
 
 #define OUT_COM()                                              \
@@ -108,6 +108,6 @@
 #define HLT_COM()        \
     fclose (resultF);    \
     CpuDtor (proc);      \
-    return SUCCESS;      \
+    return SUCCESS;
 
 #endif // DSL_H_INCLUDED
