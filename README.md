@@ -24,12 +24,12 @@ The "Processor" program is designed to execute bytecode instructions stored in a
 
 ---
 ## Files
-- **assembler.cpp**
+1. **assembler.cpp**
 
-- This file contains the main functionality for assembling bytecode from source files.
-- It reads source files, divides text into strings, and creates bytecode based on defined commands.
-- It also handles error logging and file operations.
-- **assembler.h**
+-- This file contains the main functionality for assembling bytecode from source files.
+-- It reads source files, divides text into strings, and creates bytecode based on defined commands.
+-- It also handles error logging and file operations.
+2. **assembler.h**
 
 - This header file contains structures and function declarations used by the assembler.
 - It includes definitions for registers, arguments, commands, and various modes for assembling bytecode.
