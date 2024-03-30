@@ -46,40 +46,40 @@ The "Processor" program is designed to execute bytecode instructions stored in a
 ## Files included 
 1. **assembler.cpp**
 
-- This file contains the main functionality for assembling bytecode from source files.
- It reads source files, divides text into strings, and creates bytecode based on defined commands.
-- It also handles error logging and file operations.
+   - This file contains the main functionality for assembling bytecode from source files.
+   - It reads source files, divides text into strings, and creates bytecode based on defined commands.
+   - It also handles error logging and file operations.
 2. **assembler.h**
 
-- This header file contains structures and function declarations used by the assembler.
-- It includes definitions for registers, arguments, commands, and various modes for assembling bytecode.
+   - This header file contains structures and function declarations used by the assembler.
+   - It includes definitions for registers, arguments, commands, and various modes for assembling bytecode.
 3. **CPU.cpp**
 
-- The CPU module is responsible for executing the assembled bytecode.
-- It includes functions for executing commands such as PUSH, POP, ADD, SUB, DIV, MUL, and more.
-- It manages the CPU state, RAM memory, and executing instructions sequentially.
+   - The CPU module is responsible for executing the assembled bytecode.
+   - It includes functions for executing commands such as PUSH, POP, ADD, SUB, DIV, MUL, and more.
+   - It manages the CPU state, RAM memory, and executing instructions sequentially.
 4. **CPU.h**
 
-- This header file contains declarations for the CPU module, including function prototypes and struct definitions.
-- It includes functions for CPU construction, destruction, executing commands, and managing memory.
+   - This header file contains declarations for the CPU module, including function prototypes and struct definitions.
+   - It includes functions for CPU construction, destruction, executing commands, and managing memory.
 5. **commands.h**
 
-- The commands header file defines all available commands for the Processor.
-- Each command has a unique identifier, such as PUSH, ADD, SUB, DIV, MUL, OUT, IN, POP, and more.
-- It includes the necessary structures and enums for handling commands.
+   - The commands header file defines all available commands for the Processor.
+   - Each command has a unique identifier, such as PUSH, ADD, SUB, DIV, MUL, OUT, IN, POP, and more.
+   - It includes the necessary structures and enums for handling commands.
 6. **DSL.h**
 
-- This header file contains a Domain-Specific Language (DSL) for defining macros used in the Processor.
-- It defines macros for common tasks such as pushing and popping from the stack, math operations, jumps, and more.
-- These macros simplify the implementation of command execution.
+   - This header file contains a Domain-Specific Language (DSL) for defining macros used in the Processor.
+   - It defines macros for common tasks such as pushing and popping from the stack, math operations, jumps, and more.
+   - These macros simplify the implementation of command execution.
 7. **equation.txt, fib.txt, factorial.txt**
-- examples of executed programs.
+   - examples of executed programs.
 
 ---
 
 ## How to Compile
 1. Ensure you have a C compiler installed (e.g., GCC).
-2. Compile the modules separately:
+2. Compile the modules separately (with Makefile):
    ```bash
    equation : Asm proc
 	   Assembler\assembler.exe Programs\equation.txt Assembler\res_ass.txt
