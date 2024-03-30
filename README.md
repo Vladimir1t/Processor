@@ -20,10 +20,38 @@ The "Processor" program is designed to execute bytecode instructions stored in a
 - **CPU**: Executes the bytecode instructions.
 - **Stack**: Implements a stack data structure used in the CPU.
 - **File Size Utility**: Calculates the size of a file.
-- **String Sorting Utility**: Sorts strings in a text file.
+- **String Sorting Utility**: Sorts strings in a text file. It is located in Onegin file.
 
 ---
+## Files
+- **assembler.cpp**
 
+- This file contains the main functionality for assembling bytecode from source files.
+- It reads source files, divides text into strings, and creates bytecode based on defined commands.
+- It also handles error logging and file operations.
+- **assembler.h**
+
+- This header file contains structures and function declarations used by the assembler.
+- It includes definitions for registers, arguments, commands, and various modes for assembling bytecode.
+- **CPU.cpp**
+
+-The CPU module is responsible for executing the assembled bytecode.
+- It includes functions for executing commands such as PUSH, POP, ADD, SUB, DIV, MUL, and more.
+- It manages the CPU state, RAM memory, and executing instructions sequentially.
+- **CPU.h**
+
+- This header file contains declarations for the CPU module, including function prototypes and struct definitions.
+- It includes functions for CPU construction, destruction, executing commands, and managing memory.
+- **commands.h**
+
+- The commands header file defines all available commands for the Processor.
+- Each command has a unique identifier, such as PUSH, ADD, SUB, DIV, MUL, OUT, IN, POP, and more.
+- It includes the necessary structures and enums for handling commands.
+- **DSL.h**
+
+- This header file contains a Domain-Specific Language (DSL) for defining macros used in the Processor.
+- It defines macros for common tasks such as pushing and popping from the stack, math operations, jumps, and more.
+- These macros simplify the implementation of command execution.
 ## Files Included
 1. **Assembler Module**
    - **Assembler.cpp**: Converts assembly code into bytecode.
@@ -34,7 +62,7 @@ The "Processor" program is designed to execute bytecode instructions stored in a
    - **CPU.h**: Header file for the CPU module.
    - **Commands.h**: Defines the bytecode instructions and their numeric representations.
 
-3. **Stack Module**
+3. **Stack**
    - **Stack.h**: Implements a stack data structure.
    - **Stack.cpp**: Contains stack-related functions.
 
