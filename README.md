@@ -48,10 +48,21 @@ The "Processor" program is designed to execute bytecode instructions stored in a
 1. Ensure you have a C compiler installed (e.g., GCC).
 2. Compile the modules separately:
    ```bash
-   gcc -o Assembler Assembler.cpp
-   gcc -o CPU CPU.cpp
-   gcc -o Stack Stack.cpp
-   gcc -o File_Size File_Size.cpp
+   equation : Asm proc
+	   Assembler\assembler.exe Programs\equation.txt Assembler\res_ass.txt
+	   CPU\proc.exe
+   fib : Asm proc
+	   Assembler\assembler.exe Programs\fib.txt Assembler\res_ass.txt
+	   CPU\proc.exe
+   factorial : Asm proc
+	   Assembler\assembler.exe Programs\factorial.txt Assembler\res_ass.txt
+	   CPU\proc.exe
+   
+   proc : CPU\src\CPU.cpp  Onegin\src\file_size.cpp  Onegin\src\string_read.cpp  Onegin\src\destruct.cpp  Onegin\src\str_print.cpp  Stack\src\stack.cpp 
+	   g++ -o CPU\proc CPU\src\CPU.cpp  Onegin\src\file_size.cpp  Onegin\src\string_read.cpp  Onegin\src\destruct.cpp  Onegin\src\str_print.cpp  Stack\src\stack.cpp
+	
+   Asm :  Assembler\src\assembler.cpp  Onegin\src\file_size.cpp  Onegin\src\string_read.cpp  Onegin\src\destruct.cpp  Onegin\src\str_print.cpp 
+	   g++ -o Assembler\assembler Assembler\src\assembler.cpp  Onegin\src\file_size.cpp  Onegin\src\string_read.cpp  Onegin\src\destruct.cpp  Onegin\src\str_print.cpp
    ```
 3. Each compilation will generate an executable file: `Assembler.exe`, `CPU.exe`, `Stack.exe`, and `File_Size.exe`.
 
