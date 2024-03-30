@@ -64,7 +64,7 @@ The "Processor" program is designed to execute bytecode instructions stored in a
    Asm :  Assembler\src\assembler.cpp  Onegin\src\file_size.cpp  Onegin\src\string_read.cpp  Onegin\src\destruct.cpp  Onegin\src\str_print.cpp 
 	   g++ -o Assembler\assembler Assembler\src\assembler.cpp  Onegin\src\file_size.cpp  Onegin\src\string_read.cpp  Onegin\src\destruct.cpp  Onegin\src\str_print.cpp
    ```
-3. Each compilation will generate an executable file: `Assembler.exe`, `CPU.exe`, `Stack.exe`, and `File_Size.exe`.
+3. Each compilation will generate an executable file: `Assembler.exe`, `CPU.exe`.
 
 ---
 
