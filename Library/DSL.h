@@ -7,7 +7,7 @@
     if (arg == NULL)             \
         return NULL_PTR;         \
     StackPush (&proc->stk, arg); \
-     IP += ARG_SIZE;
+    IP += ARG_SIZE;
 
 
 #define POP_COM(arg)                     \
@@ -74,6 +74,7 @@
         proc->stk.data[proc->stk.size - 1])           \
         IP = JumpTo (proc, IP);                       \
     StackPop (&proc->stk, &num1);                     \
+    StackPop (&proc->stk, &num1);                     \
     num1 = POISON;
 
 
@@ -95,7 +96,9 @@
     {                                                          \
         fprintf (resultF, "[%d] %d\n", j, proc->stk.data[j]);  \
         printf ("[%d] %d\n", j, proc->stk.data[j]);            \
-    }
+    }                                                          \
+    StackPop (&proc->stk, &num1);
+
 
 
 #define IN_COM()                           \
