@@ -14,17 +14,16 @@
 #include "..\..\Library\DSL.h"
 #include "..\..\Library\commands.h"
 
-const size_t REGISTRS_NUM  =  4;
+const size_t REGISTRS_NUM =  4;
 
-const size_t ARG_SIZE      =  4;
-const size_t COM_SIZE      =  2;
+const size_t ARG_SIZE     =  4;
+const size_t COM_SIZE     =  2;
 
-const size_t POISON_ADR    = -1;
-const size_t MARK_LEN      =  6;
-
-const char  NUM_MOD        =  0;   /* 0000 0000 */
-const char  REG_MOD        =  1;   /* 0000 0001 */
-const char  RAM_MOD        =  2;   /* 0000 0011 */
+const size_t POISON_ADR   = -1;
+const size_t MARK_LEN     =  6;
+const char  NUM_MOD       =  0;   /* 0000 0000 */
+const char  REG_MOD       =  1;   /* 0000 0001 */
+const char  RAM_MOD       =  2;   /* 0000 0011 */
 
 struct mark
 {

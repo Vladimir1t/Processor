@@ -30,7 +30,6 @@ int main (int argc, char* argv[])
 
 int ReadSourseFile (FILE* sourseF, struct Strings* Str)
 {
-
     Str->fileSize = FileSize (sourseF);                           // measures a size of the sourseF
 
     CALLOC (Str->textPointer, char, Str->fileSize + 1);
