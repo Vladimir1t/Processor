@@ -2,12 +2,12 @@
 
 static FILE* ErrorFile = fopen ("Log\\error_CPU.txt", "w");
 
-int main ()
+int main (int argc, char* argv[])
 {
     struct Cpu proc = {0};
     CpuCtor (&proc);
 
-    FillArray (&proc);                                 // get bytecode from sourse file
+    FillArray (&proc, argv[1]);                                 // get bytecode from sourse file
 
     FOPEN (resultF, "Log\\result.txt", "w");
 
@@ -33,10 +33,12 @@ int ExecuteCommands (FILE* resultF, struct Cpu* proc)
         switch (command)
         {
             case PUSH:
+                //printf ("push %d\n", *arg);
                 PUSH_COM (arg);
                 break;
 
             case POP:
+                //printf ("pop\n");
                 POP_COM (arg);
                 break;
 
@@ -117,7 +119,7 @@ int ExecuteCommands (FILE* resultF, struct Cpu* proc)
 
 void CpuCtor (Cpu* proc)
 {
-    StackCtor (&proc->stk, 2);        // construct Stack of arguments
+    StackCtor (&proc->stk, 10);        // construct Stack of arguments
     StackCtor (&proc->stkAdr, 2);     // construct Stack of addresses
 
     proc->arrayCommand = NULL;        // buffer
@@ -145,7 +147,7 @@ void CpuDtor (struct Cpu* proc)
     free (proc->ram);
 }
 
-int FillArray (struct Cpu* proc)
+int FillArray (struct Cpu* proc, char* fileSourse)
 {
     struct Strings Str = {0};
     FOPEN (bytecode, fileSourse, "rb");
@@ -178,7 +180,6 @@ size_t JumpTo (struct Cpu* proc, size_t IP)
 char GetCommand (struct Cpu* proc, size_t IP)
 {
     char command = *(char*) (proc->arrayCommand + IP);
-    //printf ("{%d}\n", command);
     return command;
 }
 
@@ -200,7 +201,7 @@ elem_t* GetArgument (struct Cpu* proc, size_t IP, char mode)
             break;
 
         case RAM_MOD:
-            elem_t adr =  *(elem_t*) (proc->arrayCommand + IP +COM_SIZE);
+            elem_t adr =  *(elem_t*) (proc->arrayCommand + IP + COM_SIZE);
             return proc->ram + adr;
             break;
     }
