@@ -10,7 +10,7 @@
 #include "..\..\Onegin\include\onegin.h"
 #include "..\..\Library\commands.h"
 
-const char*  fileSourse  = "Assembler\\res_ass.txt";  /* bytecode */
+//const char*  fileSourse  = "Assembler\\res_ass.txt";  /* bytecode */
 const char   MASK        = 3;                         /* 0000 0011 */
 const size_t RAM_SIZE    = 50;                        /* size of a RAM */
 
